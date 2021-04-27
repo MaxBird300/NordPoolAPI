@@ -10,8 +10,9 @@ Documentation for API can be found here - https://marketdata.nordpoolgroup.com/d
 import requests
 import datetime
 import sys
+import os
 import pandas as pd
-from nord_pool_config import config
+from dotenv import load_dotenv
 
 def strDate2iso(strDate):
     dt = datetime.datetime.strptime(strDate, "%d/%m/%Y")
@@ -21,11 +22,12 @@ def strDate2iso(strDate):
 class NordPoolClass():
     
     def __init__(self):
+        load_dotenv()
         
-        self.username = config().username
-        self.password = config().password
+        self.username = os.environ.get("NORDPOOLAPI_USERNAME")
+        self.password = os.environ.get("NORDPOOLAPI_PASSWORD")
         self.mySession = requests.Session()
-        self.subKey = config().subKey
+        self.subKey = os.environ.get("NORDPOOLAPI_SUBSCRIPTION_KEY")
         
     def authenticateUser(self):
         """
@@ -44,7 +46,7 @@ class NordPoolClass():
         try:
             response = self.mySession.post("https://sts.nordpoolgroup.com/connect/token", data = payload, headers = headers)
             if response.status_code == 200:
-                print("Authentication success! Token recieved.")
+                print("Authentication success! Token received.")
                 self.token = response.json()['access_token'] 
             else:
                 print("Authentication failed, status code: %s" % response.status_code)
@@ -59,7 +61,7 @@ class NordPoolClass():
         try:
             response = self.mySession.get(host, params = payload, headers = headers) 
             if response.status_code == 200:
-                print('Request successful! Data recieved.')
+                print('Request successful! Data received.')
                 return response
             else:
                 print('Request failed, status code: %s' % response.status_code)
