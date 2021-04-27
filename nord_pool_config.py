@@ -2,6 +2,8 @@
 """
 Created on Mon Mar 29 12:12:38 2021
 
+Replace the variables below with your own Nord Pool account details
+
 @author: maxbi
 """
 class config():
